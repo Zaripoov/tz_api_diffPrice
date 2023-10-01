@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  app:
+    container_name: diff-price-php
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    image: diff-price-app
+    env_file:
+        - ./.env
+    volumes:
+      - .:/var/www
+
+  nginx:
+    container_name: diff-price-nginx
+    image: nginx:latest
+    env_file:
+        - ./.env
+    ports:
+      - "${DOCKER_NGINX_PORTS}:80" # Порт для Nginx
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - .:/var/www
+    depends_on:
+      - app
